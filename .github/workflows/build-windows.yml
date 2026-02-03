@@ -8,6 +8,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -34,11 +37,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'Polos v__VERSION__'
+          releaseName: 'Polos ${{ github.ref_name }}'
           releaseBody: '婴儿头型测量系统 Windows 版本'
           releaseDraft: true
           prerelease: false
           args: --target x86_64-pc-windows-msvc
+        # Only create release for tags
+        if: startsWith(github.ref, 'refs/tags/')
+
+      - name: Build only (for branches)
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        run: npm run tauri build -- --target x86_64-pc-windows-msvc
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
