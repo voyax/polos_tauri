@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "婴儿头型测量系统",
+  "productName": "Polos",
   "version": "0.1.0",
   "identifier": "com.polos.desktop",
   "build": {
