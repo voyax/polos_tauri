@@ -3,11 +3,13 @@ import {
   LayoutDashboard, 
   Baby, 
   Settings,
-  Menu
+  Menu,
+  Building2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
 import { useState } from "react";
+import { useHospitalConfig } from "@/hooks";
 
 interface NavItemProps {
   to: string;
@@ -38,6 +40,10 @@ function NavItem({ to, icon, label, collapsed }: NavItemProps) {
 
 export function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const { data: hospitalConfig } = useHospitalConfig();
+  
+  const hospitalName = hospitalConfig?.hospitalName || "婴儿头型测量";
+  const logoPath = hospitalConfig?.logoPath;
   
   return (
     <div className="flex h-screen bg-slate-50">
@@ -50,13 +56,26 @@ export function AppLayout() {
       >
         {/* 顶部 Logo 区域 */}
         <div className="flex h-14 items-center border-b border-slate-200 px-4">
-          {!collapsed && (
-            <h1 className="text-lg font-semibold truncate">婴儿头型测量</h1>
+          {collapsed ? (
+            logoPath ? (
+              <img src={logoPath} alt="Logo" className="h-8 w-8 object-contain mx-auto" />
+            ) : (
+              <Building2 className="h-6 w-6 text-slate-600 mx-auto" />
+            )
+          ) : (
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              {logoPath ? (
+                <img src={logoPath} alt="Logo" className="h-8 w-8 object-contain flex-shrink-0" />
+              ) : (
+                <Building2 className="h-6 w-6 text-slate-600 flex-shrink-0" />
+              )}
+              <span className="font-semibold text-sm truncate">{hospitalName}</span>
+            </div>
           )}
           <Button
             variant="ghost"
             size="icon"
-            className={cn("ml-auto", collapsed && "mx-auto")}
+            className={cn("flex-shrink-0", collapsed && "hidden")}
             onClick={() => setCollapsed(!collapsed)}
           >
             <Menu className="h-5 w-5" />

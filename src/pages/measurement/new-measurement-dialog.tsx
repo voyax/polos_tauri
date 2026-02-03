@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { X, AlertCircle } from "lucide-react";
-import { Button, Card, Input } from "@/components/ui";
+import { Button, Card, Input, DatePicker } from "@/components/ui";
 import { useCreateMeasurement } from "@/hooks";
 import { calculateHeadIndices, calculateCorrectedAgeDays, gradeAll, formatCorrectedAge } from "@/lib/calculators";
 import { GradeBadge } from "@/components/common";
@@ -45,6 +45,7 @@ export function NewMeasurementDialog({
     formState: { errors },
     watch,
     reset,
+    control,
   } = useForm<MeasurementFormData>({
     resolver: zodResolver(measurementSchema),
     defaultValues: {
@@ -190,10 +191,18 @@ export function NewMeasurementDialog({
                 <label className="text-sm text-slate-600 mb-1 block">
                   测量日期
                 </label>
-                <Input
-                  type="date"
-                  {...register("measureDate")}
-                  className={`h-11 text-base ${errors.measureDate ? "border-red-500" : ""}`}
+                <Controller
+                  name="measureDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="选择测量日期"
+                      error={!!errors.measureDate}
+                      maxDate={new Date()}
+                    />
+                  )}
                 />
                 {errors.measureDate && (
                   <p className="text-xs text-red-500 mt-1">{errors.measureDate.message}</p>

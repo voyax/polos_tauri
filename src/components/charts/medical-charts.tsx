@@ -167,7 +167,7 @@ export function CranialScatterChart({ data }: ZoneChartProps) {
   const chartMargin = { top: 15, right: 15, bottom: 25, left: 5 };
 
   return (
-    <div className="w-full bg-white rounded-lg relative">
+    <div className="w-full bg-white rounded-lg relative" style={{ overflow: 'visible' }}>
       {/* Legend - Top Right */}
       <div className="flex justify-end gap-4 text-sm font-medium mb-1 px-2">
         <div className="flex items-center gap-1.5">
@@ -189,7 +189,7 @@ export function CranialScatterChart({ data }: ZoneChartProps) {
       </div>
 
       {/* Chart Container */}
-      <div className="relative h-[380px]">
+      <div className="relative h-[380px]" style={{ overflow: 'visible' }}>
         {/* CVAI label */}
         <div className="absolute left-0 top-0 text-[10px] font-medium text-gray-500 z-10">CVAI(%)</div>
 
@@ -197,7 +197,7 @@ export function CranialScatterChart({ data }: ZoneChartProps) {
 
         {/* Plagiocephaly Label - at CR=0.845 */}
         <div 
-          className="absolute z-20 flex flex-col items-center justify-center px-3 py-1.5 bg-white/90 rounded-full border border-red-400 shadow-sm pointer-events-none"
+          className="absolute z-10 flex flex-col items-center justify-center px-3 py-1.5 bg-white/90 rounded-full border border-red-400 shadow-sm pointer-events-none"
           style={{ left: '50%', top: '20px', transform: 'translateX(-50%)' }}>
           <span className="text-xs font-bold text-gray-800 leading-tight">斜头</span>
           <span className="text-[9px] text-red-500 font-semibold leading-tight">Plagiocephaly</span>
@@ -230,7 +230,7 @@ export function CranialScatterChart({ data }: ZoneChartProps) {
 
         {/* Scaphocephaly Label - positioned inside the red zone on far left */}
         <div 
-          className="absolute z-20 flex flex-col items-center justify-center px-3 py-1.5 bg-white/90 rounded-full border border-red-400 shadow-sm pointer-events-none"
+          className="absolute z-10 flex flex-col items-center justify-center px-3 py-1.5 bg-white/90 rounded-full border border-red-400 shadow-sm pointer-events-none"
           style={{ left: '15%', top: '50%', transform: 'translateY(-50%)' }}>
           <span className="text-xs font-bold text-gray-800 leading-tight">长头</span>
           <span className="text-[9px] text-red-500 font-semibold leading-tight">Scaphocephaly</span>
@@ -238,7 +238,7 @@ export function CranialScatterChart({ data }: ZoneChartProps) {
 
         {/* Brachycephaly Label - at CR=0.985, CVAI=7.5 (right side in red zone) */}
         <div 
-          className="absolute z-20 flex flex-col items-center justify-center px-3 py-1.5 bg-white/90 rounded-full border border-red-400 shadow-sm pointer-events-none"
+          className="absolute z-10 flex flex-col items-center justify-center px-3 py-1.5 bg-white/90 rounded-full border border-red-400 shadow-sm pointer-events-none"
           style={{ right: '5%', top: '50%', transform: 'translateY(-50%)' }}>
           <span className="text-xs font-bold text-gray-800 leading-tight">扁头</span>
           <span className="text-[9px] text-red-500 font-semibold leading-tight">Brachycephaly</span>
@@ -297,7 +297,12 @@ export function CranialScatterChart({ data }: ZoneChartProps) {
                 width={22}
             />
 
-            <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
+            <Tooltip 
+              cursor={{ strokeDasharray: '3 3' }} 
+              content={<CustomTooltip />}
+              wrapperStyle={{ zIndex: 50 }}
+              isAnimationActive={false}
+            />
 
             {/* ZONES */}
             <ReferenceArea x1={0.70} x2={1.02} y1={0} y2={16} fill={colors.bgRed} fillOpacity={0.6} stroke="none" />

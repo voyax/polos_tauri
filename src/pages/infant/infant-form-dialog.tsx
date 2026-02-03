@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { X, AlertCircle } from "lucide-react";
-import { Button, Card, Input } from "@/components/ui";
+import { Button, Card, Input, DatePicker } from "@/components/ui";
 import { useCreateInfant, useUpdateInfant, useInfant } from "@/hooks";
 import { totalDaysToGestational } from "@/lib/calculators";
 
@@ -55,6 +55,7 @@ export function InfantFormDialog({
     reset,
     setValue,
     watch,
+    control,
   } = useForm<InfantFormData>({
     resolver: zodResolver(infantSchema),
     defaultValues: {
@@ -136,7 +137,7 @@ export function InfantFormDialog({
       />
       
       {/* 弹窗内容 */}
-      <Card className="relative w-[480px] max-h-[90vh] overflow-auto">
+      <Card className="relative w-[540px] max-h-[90vh] overflow-auto">
         {/* 关闭按钮 */}
         <button
           className="absolute right-4 top-4 text-slate-400 hover:text-slate-600"
@@ -205,10 +206,18 @@ export function InfantFormDialog({
               {/* 出生日期 */}
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-slate-700">出生日期</label>
-                <Input
-                  type="date"
-                  {...register("birthDate")}
-                  className={errors.birthDate ? "border-red-500" : ""}
+                <Controller
+                  name="birthDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="选择出生日期"
+                      error={!!errors.birthDate}
+                      maxDate={new Date()}
+                    />
+                  )}
                 />
                 {errors.birthDate && (
                   <p className="text-xs text-red-500">{errors.birthDate.message}</p>

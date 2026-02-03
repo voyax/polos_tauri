@@ -208,8 +208,9 @@ export function SettingsPage() {
         <CardContent>
           <div className="text-sm text-slate-600 space-y-1">
             <p><span className="text-slate-400">应用版本:</span> 0.1.0</p>
-            <p><span className="text-slate-400">技术栈:</span> Tauri + React + TypeScript</p>
-            <p><span className="text-slate-400">数据存储:</span> SQLite (本地)</p>
+            <p><span className="text-slate-400">作者:</span> voya</p>
+            <p><span className="text-slate-400">邮箱:</span> <a href="mailto:hi@melolib.com" className="text-indigo-600 hover:underline">hi@melolib.com</a></p>
+            <p className="text-xs text-slate-400 pt-2">© {new Date().getFullYear()} voya. All rights reserved.</p>
           </div>
         </CardContent>
       </Card>

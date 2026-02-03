@@ -180,6 +180,11 @@ function InfantListItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium text-slate-900 truncate">{infant.name}</span>
+          {infant.phone && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 font-mono">
+              {infant.phone.slice(-4)}
+            </span>
+          )}
           <span className={`text-xs px-1.5 py-0.5 rounded ${
             infant.gender === "male" 
               ? "bg-blue-50 text-blue-600" 

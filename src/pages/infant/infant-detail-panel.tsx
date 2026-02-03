@@ -10,11 +10,13 @@ import {
   Ruler,
   TrendingUp,
   FileText,
+  X,
 } from "lucide-react";
 import { Button, Card, CardContent, CardHeader } from "@/components/ui";
 import { useInfant, useMeasurementsByInfant, useDeleteInfant, useDeleteMeasurement } from "@/hooks";
 import { GradeBadge } from "@/components/common";
 import { TrendCharts } from "@/components/charts";
+import { MeasurementReport } from "@/components/report";
 import { gradeAll, formatGestationalAge, formatCorrectedAge } from "@/lib/calculators";
 import { formatDate, calculateAge } from "@/lib/utils";
 import { NewMeasurementDialog } from "../measurement/new-measurement-dialog";
@@ -34,6 +36,7 @@ export function InfantDetailPanel({ infantId, onEdit }: Props) {
   
   const [showMeasurementDialog, setShowMeasurementDialog] = useState(false);
   const [editMeasurementId, setEditMeasurementId] = useState<number | null>(null);
+  const [reportMeasurementId, setReportMeasurementId] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"records" | "trends">("records");
 
   if (isLoading) {
@@ -194,9 +197,10 @@ export function InfantDetailPanel({ infantId, onEdit }: Props) {
               measurements={measurements} 
               infant={infant}
               onEdit={(id) => setEditMeasurementId(id)}
+              onReport={(id) => setReportMeasurementId(id)}
             />
           ) : (
-            <TrendCharts measurements={measurements} />
+            <TrendCharts measurements={measurements} gender={infant?.gender === 'male' ? '男' : '女'} />
           )}
         </CardContent>
       </Card>
@@ -219,6 +223,33 @@ export function InfantDetailPanel({ infantId, onEdit }: Props) {
           infant={infant}
           onSuccess={() => setEditMeasurementId(null)}
         />
+      )}
+
+      {/* 报告弹窗 */}
+      {infant && reportMeasurementId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* 遮罩 */}
+          <div 
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setReportMeasurementId(null)}
+          />
+          {/* 弹窗内容 */}
+          <div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto m-4">
+            <button
+              className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 z-10"
+              onClick={() => setReportMeasurementId(null)}
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="p-6">
+              <MeasurementReport 
+                infant={infant} 
+                measurements={measurements}
+                currentMeasurement={measurements.find(m => m.id === reportMeasurementId)}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -250,10 +281,12 @@ function MeasurementList({
   measurements,
   infant,
   onEdit,
+  onReport,
 }: { 
   measurements: Measurement[];
   infant: Infant;
   onEdit: (id: number) => void;
+  onReport: (id: number) => void;
 }) {
   if (measurements.length === 0) {
     return (
@@ -272,6 +305,7 @@ function MeasurementList({
           measurement={m} 
           infant={infant}
           onEdit={() => onEdit(m.id)}
+          onReport={() => onReport(m.id)}
         />
       ))}
     </div>
@@ -283,10 +317,12 @@ function MeasurementCard({
   measurement, 
   infant: _infant, // 保留用于未来功能
   onEdit,
+  onReport,
 }: { 
   measurement: Measurement;
   infant: Infant;
   onEdit: () => void;
+  onReport: () => void;
 }) {
   const m = measurement;
   const grades = gradeAll({ cr: m.cr, diff: m.diff, cvai: m.cvai });
@@ -307,7 +343,7 @@ function MeasurementCard({
           {formatDate(m.measureDate, "datetime")}
         </div>
         <div className="flex gap-2">
-          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={onReport}>
             <FileText className="w-3.5 h-3.5 mr-1" />
             报告
           </Button>
